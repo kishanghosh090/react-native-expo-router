@@ -1,29 +1,58 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Button } from "@react-navigation/elements";
+import { Stack, useRouter } from "expo-router";
+import React from "react";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
+const _layout = () => {
+  const router = useRouter();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#ff2d2d",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="index"
+        options={{ headerShown: true, title: "Home" }}
+      />
+      <Stack.Screen
+        name="register/index"
+        options={{
+          headerShown: true,
+          animation: "ios_from_right",
+          headerRight: () => {
+            return (
+              <Button
+                onPressIn={() => {
+                  router.push("/login");
+                }}
+              >
+                login
+              </Button>
+            );
+          },
+          title: "Register",
+        }}
+      />
+      <Stack.Screen
+        name="login"
+        options={{
+          title: "login",
+          presentation: "modal",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          title: "Tab One",
+          headerShown: false,
+          animation: "ios_from_left",
+        }}
+      />
+    </Stack>
   );
-}
+};
+
+export default _layout;
